@@ -1,0 +1,7 @@
+fonts/default.fnt
+images/background.png
+images/obstacle.png
+images/player.png
+musics/level1.mp3
+skins/uiskin.atlas
+skins/uiskin.json
