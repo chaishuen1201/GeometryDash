@@ -2,96 +2,113 @@ package com.grp19.geometrydash.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.grp19.geometrydash.GeometryDash;
 
 public class MainMenuScreen implements Screen {
     private final GeometryDash game;
-    private final Stage stage;
-    private final Skin skin;
+    private SpriteBatch batch;
+    private Texture background;
+    private Texture playButton;
+    private Texture settingButton;
+    private Texture leaderboardButton;
+    private Texture titleImage;
+    private Music menuMusic;
+
+    private float playButtonX, playButtonY, playButtonWidth, playButtonHeight;
+    private float settingButtonX, settingButtonY, settingButtonWidth, settingButtonHeight;
+    private float leaderboardButtonX, leaderboardButtonY, leaderboardButtonWidth, leaderboardButtonHeight;
+    private float titleX, titleY, titleWidth, titleHeight;
 
     public MainMenuScreen(GeometryDash game) {
         this.game = game;
-        stage = new Stage(new ScreenViewport());
-        Gdx.input.setInputProcessor(stage);
-        skin = new Skin(Gdx.files.internal("skins/uiskin.json"));
-
-        Table table = new Table();
-        table.setFillParent(true);
-        stage.addActor(table);
-
-        TextButton playButton = new TextButton("Play", skin);
-        TextButton settingsButton = new TextButton("Settings", skin);
-        TextButton leaderboardButton = new TextButton("Leaderboard", skin);
-        TextButton exitButton = new TextButton("Exit", skin);
-
-        playButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                game.setScreen(new LevelSelectionScreen(game));
-            }
-        });
-
-        settingsButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                game.setScreen(new SettingsScreen(game));
-            }
-        });
-
-        leaderboardButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                game.setScreen(new LeaderboardScreen(game));
-            }
-        });
-
-        exitButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.exit();
-            }
-        });
-
-        table.add(playButton).fillX().uniformX();
-        table.row().pad(10, 0, 10, 0);
-        table.add(settingsButton).fillX().uniformX();
-        table.row();
-        table.add(leaderboardButton).fillX().uniformX();
-        table.row().pad(10, 0, 10, 0);
-        table.add(exitButton).fillX().uniformX();
     }
 
     @Override
-    public void show() {}
+    public void show() {
+        batch = new SpriteBatch();
+        // Using player.jpg as background
+        background = new Texture(Gdx.files.internal("background.png"));
+        // Using player.png for all buttons (we'll scale them differently)
+        playButton = new Texture(Gdx.files.internal("play.png"));
+        settingButton = new Texture(Gdx.files.internal("setting.png"));
+        leaderboardButton = new Texture(Gdx.files.internal("leaderboard.png"));
+        // Using player.png for title too (just as placeholder)
+        titleImage = new Texture(Gdx.files.internal("Title.png"));
+
+        menuMusic = Gdx.audio.newMusic(Gdx.files.internal("mainMenu.mp3"));
+        menuMusic.setLooping(true);
+        menuMusic.play();
+
+        // Dimensions
+        playButtonWidth = 400;
+        playButtonHeight = 400;
+        playButtonX = (Gdx.graphics.getWidth() - playButtonWidth) / 2f;
+        playButtonY = (Gdx.graphics.getHeight() - playButtonHeight) / 2f;
+
+        settingButtonWidth = 350;
+        settingButtonHeight = 350;
+        settingButtonX = playButtonX + playButtonWidth + 20;
+        settingButtonY = playButtonY + (playButtonHeight - settingButtonHeight) / 2f;
+
+        leaderboardButtonWidth = 300;
+        leaderboardButtonHeight = 300;
+        leaderboardButtonX = playButtonX - leaderboardButtonWidth - 20;
+        leaderboardButtonY = playButtonY + (playButtonHeight - leaderboardButtonHeight) / 2f;
+
+        titleWidth = 1500;
+        titleHeight = 300;
+        titleX = (Gdx.graphics.getWidth() - titleWidth) / 2f;
+        titleY = playButtonY + playButtonHeight + 40;
+    }
 
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        stage.act();
-        stage.draw();
-    }
 
-    @Override
-    public void resize(int width, int height) {
-        stage.getViewport().update(width, height, true);
-    }
+        batch.begin();
+        // Draw background (stretched to screen size)
+        batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        // Draw title
+        batch.draw(titleImage, titleX, titleY, titleWidth, titleHeight);
+        // Draw buttons (using same texture but different sizes)
+        batch.draw(playButton, playButtonX, playButtonY, playButtonWidth, playButtonHeight);
+        batch.draw(settingButton, settingButtonX, settingButtonY, settingButtonWidth, settingButtonHeight);
+        batch.draw(leaderboardButton, leaderboardButtonX, leaderboardButtonY, leaderboardButtonWidth, leaderboardButtonHeight);
+        batch.end();
 
-    @Override public void pause() {}
-    @Override public void resume() {}
-    @Override public void hide() {}
+        if (Gdx.input.justTouched()) {
+            float x = Gdx.input.getX();
+            float y = Gdx.graphics.getHeight() - Gdx.input.getY();
+
+            if (x >= playButtonX && x <= playButtonX + playButtonWidth &&
+                y >= playButtonY && y <= playButtonY + playButtonHeight) {
+                menuMusic.stop();
+                Gdx.app.postRunnable(() -> {
+                    game.setScreen(new LevelSelectionScreen(game));
+                    dispose();
+                });
+            }
+        }
+    }
 
     @Override
     public void dispose() {
-        stage.dispose();
-        skin.dispose();
+        batch.dispose();
+        background.dispose();
+        playButton.dispose();
+        settingButton.dispose();
+        leaderboardButton.dispose();
+        titleImage.dispose();
+        menuMusic.dispose();
     }
+
+    @Override public void resize(int width, int height) {}
+    @Override public void pause() {}
+    @Override public void resume() {}
+    @Override public void hide() {}
 }

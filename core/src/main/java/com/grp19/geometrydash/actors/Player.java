@@ -1,34 +1,52 @@
-//Player.java
 package com.grp19.geometrydash;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
 
 public class Player {
     private Texture texture;
-    private float x, y, velocityY;
-    private final float GRAVITY = -20;
-    private final float JUMP_VELOCITY = 600;
+    private Rectangle bounds;
+    private float yVelocity = 0;
+    private final float GRAVITY = -600f;
+    private final float JUMP_FORCE = 350f;
+    private boolean isGrounded = true;
 
     public Player() {
-        texture = new Texture("player.png");
-        x = 100;
-        y = 300;
+        texture = new Texture(Gdx.files.internal("player.png"));
+        bounds = new Rectangle(100, 100, texture.getWidth(), texture.getHeight());
     }
 
     public void update(float delta) {
-        if (Gdx.input.justTouched()) velocityY = JUMP_VELOCITY;
-        velocityY += GRAVITY;
-        y += velocityY * delta;
-        if (y < 0) y = 0;
+        // Apply gravity
+        yVelocity += GRAVITY * delta;
+        bounds.y += yVelocity * delta;
+
+        // Ground collision
+        if (bounds.y < 100) {
+            bounds.y = 100;
+            yVelocity = 0;
+            isGrounded = true;
+        } else {
+            isGrounded = false;
+        }
+
+        // Jump input
+        if (Gdx.input.justTouched() && isGrounded) {
+            yVelocity = JUMP_FORCE;
+        }
     }
 
     public void render(SpriteBatch batch) {
-        batch.draw(texture, x, y);
+        batch.draw(texture, bounds.x, bounds.y);
     }
 
-    public boolean collides() {
-        return y <= 0;
+    public Rectangle getBounds() {
+        return bounds;
+    }
+
+    public void dispose() {
+        texture.dispose();
     }
 }
