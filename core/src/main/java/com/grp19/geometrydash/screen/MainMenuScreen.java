@@ -30,20 +30,20 @@ public class MainMenuScreen implements Screen {
     @Override
     public void show() {
         batch = new SpriteBatch();
-        // background
+
         background = new Texture(Gdx.files.internal("background.png"));
-        // buttons
         playButton = new Texture(Gdx.files.internal("play.png"));
         settingButton = new Texture(Gdx.files.internal("setting.png"));
         leaderboardButton = new Texture(Gdx.files.internal("leaderboard.png"));
-        // GeometryDash title
         titleImage = new Texture(Gdx.files.internal("Title.png"));
 
+        // Play music
         menuMusic = Gdx.audio.newMusic(Gdx.files.internal("mainMenu.mp3"));
         menuMusic.setLooping(true);
+        menuMusic.setVolume(0.8f); //set volume
         menuMusic.play();
 
-        // Dimensions
+        // Positioning
         playButtonWidth = 400;
         playButtonHeight = 400;
         playButtonX = (Gdx.graphics.getWidth() - playButtonWidth) / 2f;
@@ -71,11 +71,8 @@ public class MainMenuScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         batch.begin();
-        // Draw background (stretched to screen size)
         batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        // Draw title
         batch.draw(titleImage, titleX, titleY, titleWidth, titleHeight);
-        // Draw buttons (using same texture but different sizes)
         batch.draw(playButton, playButtonX, playButtonY, playButtonWidth, playButtonHeight);
         batch.draw(settingButton, settingButtonX, settingButtonY, settingButtonWidth, settingButtonHeight);
         batch.draw(leaderboardButton, leaderboardButtonX, leaderboardButtonY, leaderboardButtonWidth, leaderboardButtonHeight);
@@ -87,7 +84,10 @@ public class MainMenuScreen implements Screen {
 
             if (x >= playButtonX && x <= playButtonX + playButtonWidth &&
                 y >= playButtonY && y <= playButtonY + playButtonHeight) {
-                menuMusic.stop();
+                // Stop music and change screen
+                if (menuMusic != null && menuMusic.isPlaying()) {
+                    menuMusic.stop();
+                }
                 Gdx.app.postRunnable(() -> {
                     game.setScreen(new LevelSelectionScreen(game));
                     dispose();
@@ -104,7 +104,7 @@ public class MainMenuScreen implements Screen {
         settingButton.dispose();
         leaderboardButton.dispose();
         titleImage.dispose();
-        menuMusic.dispose();
+        if (menuMusic != null) menuMusic.dispose();
     }
 
     @Override public void resize(int width, int height) {}
