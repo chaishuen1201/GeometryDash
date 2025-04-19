@@ -1,4 +1,4 @@
-package com.grp19.geometrydash.entities;
+package com.grp19.geometrydash.actors;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;

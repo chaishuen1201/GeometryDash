@@ -34,7 +34,7 @@ public class LevelSelectionScreen implements Screen {
                 levelTextures[i] = new Texture(Gdx.files.internal("level" + (i + 1) + ".png"));
             } catch (Exception e) {
                 Gdx.app.error("LevelSelection", "Error loading level texture " + (i + 1), e);
-                levelTextures[i] = new Texture(Gdx.files.internal("player.png")); // Fallback
+                levelTextures[i] = new Texture(Gdx.files.internal("player.png"));
             }
         }
         lockTexture = new Texture(Gdx.files.internal("lock.png"));
@@ -49,15 +49,15 @@ public class LevelSelectionScreen implements Screen {
         batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         // Draw title
-        float titleWidth = 800;
-        float titleHeight = 150;
+        float titleWidth = 1000;
+        float titleHeight = 300;
         float titleX = (Gdx.graphics.getWidth() - titleWidth) / 2f;
         float titleY = Gdx.graphics.getHeight() - titleHeight - 40;
         batch.draw(titleImage, titleX, titleY, titleWidth, titleHeight);
 
         // Icon display layout
-        float iconSize = 200;
-        float spacing = 60;
+        float iconSize = 250;
+        float spacing = 100;
 
         float startY1 = titleY - iconSize - 60;
         float startY2 = startY1 - iconSize - spacing;

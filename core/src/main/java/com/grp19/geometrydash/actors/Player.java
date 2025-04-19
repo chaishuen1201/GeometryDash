@@ -1,4 +1,4 @@
-package com.grp19.geometrydash;
+package com.grp19.geometrydash.actors;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -11,30 +11,36 @@ public class Player {
     private float yVelocity = 0;
     private final float GRAVITY = -600f;
     private final float JUMP_FORCE = 350f;
-    private boolean isGrounded = true;
+    private final int MAX_JUMPS = 3;
+
+    private int jumpCount = 0;
+    private float jumpCooldown = 0.15f;
+    private float timeSinceLastJump = 0f;
 
     public Player() {
         texture = new Texture(Gdx.files.internal("player.png"));
-        bounds = new Rectangle(100, 100, texture.getWidth(), texture.getHeight());
+        bounds = new Rectangle(100, 235, texture.getWidth(), texture.getHeight());
     }
 
     public void update(float delta) {
-        // Apply gravity
+        // Gravity
         yVelocity += GRAVITY * delta;
         bounds.y += yVelocity * delta;
 
         // Ground collision
-        if (bounds.y < 100) {
-            bounds.y = 100;
+        if (bounds.y < 235) {
+            bounds.y = 235;
             yVelocity = 0;
-            isGrounded = true;
-        } else {
-            isGrounded = false;
+            jumpCount = 0;
         }
 
-        // Jump input
-        if (Gdx.input.justTouched() && isGrounded) {
+        timeSinceLastJump += delta;
+
+        // Jump input (hold or tap) with cooldown
+        if (Gdx.input.isTouched() && jumpCount < MAX_JUMPS && timeSinceLastJump >= jumpCooldown) {
             yVelocity = JUMP_FORCE;
+            jumpCount++;
+            timeSinceLastJump = 0;
         }
     }
 

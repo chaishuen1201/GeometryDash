@@ -25,7 +25,7 @@ public class GameOverScreen implements Screen {
     @Override
     public void show() {
         batch = new SpriteBatch();
-        background = new Texture(Gdx.files.internal("gameBackground.png"));
+        background = new Texture(Gdx.files.internal("background.png"));
         gameOverText = new Texture(Gdx.files.internal("gameOver.png"));
         retryButton = new Texture(Gdx.files.internal("retry.png"));
     }
@@ -46,7 +46,7 @@ public class GameOverScreen implements Screen {
 
         // Draw retry button
         float retryWidth = 250;
-        float retryHeight = 120;
+        float retryHeight = 250;
         float retryX = (Gdx.graphics.getWidth() - retryWidth) / 2f;
         float retryY = gameOverY - retryHeight - 50;
         batch.draw(retryButton, retryX, retryY, retryWidth, retryHeight);

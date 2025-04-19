@@ -30,13 +30,13 @@ public class MainMenuScreen implements Screen {
     @Override
     public void show() {
         batch = new SpriteBatch();
-        // Using player.jpg as background
+        // background
         background = new Texture(Gdx.files.internal("background.png"));
-        // Using player.png for all buttons (we'll scale them differently)
+        // buttons
         playButton = new Texture(Gdx.files.internal("play.png"));
         settingButton = new Texture(Gdx.files.internal("setting.png"));
         leaderboardButton = new Texture(Gdx.files.internal("leaderboard.png"));
-        // Using player.png for title too (just as placeholder)
+        // GeometryDash title
         titleImage = new Texture(Gdx.files.internal("Title.png"));
 
         menuMusic = Gdx.audio.newMusic(Gdx.files.internal("mainMenu.mp3"));
