@@ -4,6 +4,7 @@ background.png
 fonts/default.fnt
 gameBackground.jpg
 gameOver.png
+ground.png
 images/obstacle.png
 leaderboard.png
 level1.png
