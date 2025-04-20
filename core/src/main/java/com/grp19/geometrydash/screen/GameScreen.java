@@ -119,3 +119,25 @@ public class GameScreen implements Screen {
         player.dispose();
     }
 }
+
+// Pause menu thingy
+// Load skin if not already
+Skin skin = new Skin(Gdx.files.internal("uiskin.json")); // or your custom skin
+this.skin = skin; // if you're storing it
+
+// Create pause button
+TextButton pauseButton = new TextButton("II", skin); // "II" for pause symbol
+pauseButton.setPosition(Gdx.graphics.getWidth() - 100, Gdx.graphics.getHeight() - 60);
+pauseButton.setSize(80, 50);
+
+pauseButton.addListener(new ClickListener() {
+    @Override
+    public void clicked(InputEvent event, float x, float y) {
+        if (!isPaused) {
+            togglePause();
+        }
+    }
+});
+
+// Add to stage
+stage.addActor(pauseButton);
