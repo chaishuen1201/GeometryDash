@@ -2,19 +2,17 @@ package com.grp19.geometrydash.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.grp19.geometrydash.GeometryDash;
-import com.grp19.geometrydash.screen.GameScreen;
-import com.badlogic.gdx.graphics.GL20;
+
 public class LevelSelectionScreen implements Screen {
     private final GeometryDash game;
     private SpriteBatch batch;
-    private Texture background;
-    private Texture titleImage;
+    private Texture background, titleImage, lockTexture, backButton;
     private Texture[] levelTextures;
-    private Texture lockTexture;
-
+    private float backButtonX, backButtonY, backButtonWidth, backButtonHeight;
     private final int NUM_LEVELS = 5;
     private int unlockedLevels = 1; // Start with only level 1 unlocked
 
@@ -25,9 +23,9 @@ public class LevelSelectionScreen implements Screen {
     @Override
     public void show() {
         batch = new SpriteBatch();
-        background = new Texture(Gdx.files.internal("background.png"));
-        titleImage = new Texture(Gdx.files.internal("Select Level.png"));
 
+        background = new Texture(Gdx.files.internal("background.png"));
+        titleImage = new Texture(Gdx.files.internal("select_level_title.png"));
         levelTextures = new Texture[NUM_LEVELS];
         for (int i = 0; i < NUM_LEVELS; i++) {
             try {
@@ -38,32 +36,35 @@ public class LevelSelectionScreen implements Screen {
             }
         }
         lockTexture = new Texture(Gdx.files.internal("lock.png"));
+        backButton = new Texture(Gdx.files.internal("back.png"));
     }
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0.1f, 0.1f, 0.1f, 1);
+        Gdx.gl.glClearColor(0f, 0f, 0f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         batch.begin();
+
+        // Draw background
         batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         // Draw title
-        float titleWidth = 1000;
+        float titleWidth = 1200;
         float titleHeight = 300;
         float titleX = (Gdx.graphics.getWidth() - titleWidth) / 2f;
         float titleY = Gdx.graphics.getHeight() - titleHeight - 40;
         batch.draw(titleImage, titleX, titleY, titleWidth, titleHeight);
 
-        // Icon display layout
+        // Icon layout
         float iconSize = 250;
         float spacing = 100;
-
+        float startX1 = (Gdx.graphics.getWidth() - (3 * iconSize + 2 * spacing)) / 2f;
+        float startX2 = (Gdx.graphics.getWidth() - (2 * iconSize + spacing)) / 2f;
         float startY1 = titleY - iconSize - 60;
         float startY2 = startY1 - iconSize - spacing;
 
-        // First row: 3 icons
-        float startX1 = (Gdx.graphics.getWidth() - (3 * iconSize + 2 * spacing)) / 2f;
+        // Draw 3 icons in first row
         for (int i = 0; i < 3 && i < NUM_LEVELS; i++) {
             float x = startX1 + i * (iconSize + spacing);
             float y = startY1;
@@ -75,8 +76,7 @@ public class LevelSelectionScreen implements Screen {
             }
         }
 
-        // Second row: 2 icons
-        float startX2 = (Gdx.graphics.getWidth() - (2 * iconSize + spacing)) / 2f;
+        // Draw 2 icons in second row
         for (int i = 3; i < NUM_LEVELS; i++) {
             float x = startX2 + (i - 3) * (iconSize + spacing);
             float y = startY2;
@@ -88,6 +88,13 @@ public class LevelSelectionScreen implements Screen {
             }
         }
 
+        // Draw back button
+        backButtonWidth = 150;
+        backButtonHeight = 150;
+        backButtonX = 20;
+        backButtonY = Gdx.graphics.getHeight() - backButtonHeight - 20;
+        batch.draw(backButton, backButtonX, backButtonY, backButtonWidth, backButtonHeight);
+
         batch.end();
 
         // Handle touch input
@@ -95,6 +102,16 @@ public class LevelSelectionScreen implements Screen {
             float touchX = Gdx.input.getX();
             float touchY = Gdx.graphics.getHeight() - Gdx.input.getY();
 
+            // If back button is pressed, return to main menu
+            if (touchX >= backButtonX && touchX <= backButtonX + backButtonWidth &&
+                touchY >= backButtonY && touchY <= backButtonY + backButtonHeight) {
+                Gdx.app.postRunnable(() -> {
+                    game.setScreen(new MainMenuScreen(game));
+                    dispose();
+                });
+            }
+
+            // Level buttons
             for (int i = 0; i < NUM_LEVELS; i++) {
                 float x, y;
                 if (i < 3) {
@@ -131,6 +148,7 @@ public class LevelSelectionScreen implements Screen {
             if (tex != null) tex.dispose();
         }
         lockTexture.dispose();
+        backButton.dispose();
     }
 
     @Override public void resize(int width, int height) {}
