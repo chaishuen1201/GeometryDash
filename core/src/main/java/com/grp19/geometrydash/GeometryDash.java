@@ -4,8 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.grp19.geometrydash.screen.MainMenuScreen;
-import com.grp19.geometrydash.util.PreferencesManager;
-import com.badlogic.gdx.Gdx;
+import com.grp19.geometrydash.utils.PreferencesManager;
 
 public class GeometryDash extends Game {
     public SpriteBatch batch;
@@ -14,16 +13,11 @@ public class GeometryDash extends Game {
 
     @Override
     public void create() {
-        try {
-            batch = new SpriteBatch();
-            font = new BitmapFont();
-            font.getData().setScale(2);
-            prefs = new PreferencesManager();
-            setScreen(new MainMenuScreen(this));
-            Gdx.app.log("GeometryDash", "Game started");
-        } catch (Exception e) {
-            Gdx.app.error("GeometryDash", "Initialization error", e);
-        }
+        batch = new SpriteBatch();
+        font = new BitmapFont();
+        font.getData().setScale(2);
+        prefs = new PreferencesManager();
+        setScreen(new MainMenuScreen(this));
     }
 
     @Override

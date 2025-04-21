@@ -1,4 +1,4 @@
-package com.grp19.geometrydash.util;
+package com.grp19.geometrydash.utils;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
