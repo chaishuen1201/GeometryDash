@@ -4,9 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.grp19.geometrydash.GameData;
 import com.grp19.geometrydash.GeometryDash;
-import com.grp19.geometrydash.screen.GameScreen;
 import com.badlogic.gdx.graphics.GL20;
+
 public class LevelSelectionScreen implements Screen {
     private final GeometryDash game;
     private SpriteBatch batch;
@@ -17,19 +18,19 @@ public class LevelSelectionScreen implements Screen {
     private Texture backButton;
 
     private final int NUM_LEVELS = 5;
-    private final int unlockedLevels = 1;
+    private int unlockedLevels; // Now we'll get this from GameData
 
     public LevelSelectionScreen(GeometryDash game) {
         this.game = game;
+        this.unlockedLevels = GameData.getInstance().getUnlockedLevels();
     }
 
     @Override
     public void show() {
         batch = new SpriteBatch();
-
         background = new Texture("background.png");
         titleImage = new Texture("Select Level.png");
-        backButton = new Texture("backFromLevel.png");
+        backButton = new Texture("back.png");
         lockTexture = new Texture("lock.png");
 
         levelTextures = new Texture[NUM_LEVELS];
@@ -54,14 +55,14 @@ public class LevelSelectionScreen implements Screen {
         batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         // Draw title
-        float titleWidth = 1000;
+        float titleWidth = 1200;
         float titleHeight = 300;
         float titleX = (Gdx.graphics.getWidth() - titleWidth) / 2f;
         float titleY = Gdx.graphics.getHeight() - titleHeight - 40;
         batch.draw(titleImage, titleX, titleY, titleWidth, titleHeight);
 
         // Back button
-        float backButtonSize = 100;
+        float backButtonSize = 150;
         float margin = 60;
         float backButtonX = margin;
         float backButtonY = Gdx.graphics.getHeight() - backButtonSize - margin;

@@ -12,11 +12,7 @@ public class PauseMenu implements Screen {
     private final GeometryDash game;
     private final GameScreen gameScreen;
     private SpriteBatch batch;
-    private Texture background, titleImage, restartButton, resumeButton, mainmenuButton;
-    private float titleX, titleY, titleWidth, titleHeight;
-    private float resumeButtonX, resumeButtonY, resumeButtonWidth, resumeButtonHeight;
-    private float restartButtonX, restartButtonY, restartButtonWidth, restartButtonHeight;
-    private float mainmenuButtonX, mainmenuButtonY, mainmenuButtonWidth, mainmenuButtonHeight;
+    private Texture background, titleImage, restartButton, resumeButton, mainMenuButton;
 
     public PauseMenu(GeometryDash game, GameScreen gameScreen) {
         this.game = game;
@@ -25,14 +21,16 @@ public class PauseMenu implements Screen {
 
     @Override
     public void show() {
+        // Pause background music
+        AudioManager.getInstance().pauseMusic();
+
         batch = new SpriteBatch();
+
         background = new Texture(Gdx.files.internal("background.png"));
         titleImage = new Texture(Gdx.files.internal("pause_title.png"));
         resumeButton = new Texture(Gdx.files.internal("resume.png"));
         restartButton = new Texture(Gdx.files.internal("restart.png"));
-        mainmenuButton = new Texture(Gdx.files.internal("main_menu.png"));
-
-        AudioManager.getInstance().pauseMusic();
+        mainMenuButton = new Texture(Gdx.files.internal("main_menu.png"));
     }
 
     @Override
@@ -41,40 +39,45 @@ public class PauseMenu implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         batch.begin();
+
+        // Draw background
         batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-        // Draw title
-        titleWidth = 800;
-        titleHeight = 275;
-        titleX = (Gdx.graphics.getWidth() - titleWidth) / 2f;
-        titleY = Gdx.graphics.getHeight() / 2f + 100;
+        // Draw "Pause" title
+        float titleWidth = 800;
+        float titleHeight = 275;
+        float titleX = (Gdx.graphics.getWidth() - titleWidth) / 2f;
+        float titleY = Gdx.graphics.getHeight() / 2f + 100;
         batch.draw(titleImage, titleX, titleY, titleWidth, titleHeight);
 
-        // Draw buttons
-        resumeButtonWidth = 350;
-        resumeButtonHeight = 350;
-        resumeButtonX = (Gdx.graphics.getWidth() - resumeButtonWidth) / 2f;
-        resumeButtonY = (Gdx.graphics.getHeight() - resumeButtonHeight) / 2f - 150;
+        // Draw resume button
+        float resumeButtonWidth = 350;
+        float resumeButtonHeight = 350;
+        float resumeButtonX = (Gdx.graphics.getWidth() - resumeButtonWidth) / 2f;
+        float resumeButtonY = (Gdx.graphics.getHeight() - resumeButtonHeight) / 2f - 150;
         batch.draw(resumeButton, resumeButtonX, resumeButtonY, resumeButtonWidth, resumeButtonHeight);
 
-        restartButtonWidth = 300;
-        restartButtonHeight = 300;
-        restartButtonX = resumeButtonX - 380;
-        restartButtonY = resumeButtonY + (resumeButtonHeight - restartButtonHeight) / 2f;
+        // Draw restart button
+        float restartButtonWidth = 300;
+        float restartButtonHeight = 300;
+        float restartButtonX = resumeButtonX - 380;
+        float restartButtonY = resumeButtonY + (resumeButtonHeight - restartButtonHeight) / 2f;
         batch.draw(restartButton, restartButtonX, restartButtonY, restartButtonWidth, restartButtonHeight);
 
-        mainmenuButtonWidth = 300;
-        mainmenuButtonHeight = 300;
-        mainmenuButtonX = resumeButtonX + 430;
-        mainmenuButtonY = resumeButtonY + (resumeButtonHeight - mainmenuButtonHeight) / 2f;
-        batch.draw(mainmenuButton, mainmenuButtonX, mainmenuButtonY, mainmenuButtonWidth, mainmenuButtonHeight);
+        // Draw main menu button
+        float mainMenuButtonWidth = 300;
+        float mainMenuButtonHeight = 300;
+        float mainMenuButtonX = resumeButtonX + 430;
+        float mainMenuButtonY = resumeButtonY + (resumeButtonHeight - mainMenuButtonHeight) / 2f;
+        batch.draw(mainMenuButton, mainMenuButtonX, mainMenuButtonY, mainMenuButtonWidth, mainMenuButtonHeight);
         batch.end();
 
-        // Handle input
+        // Handle touch input
         if (Gdx.input.justTouched()) {
             float touchX = Gdx.input.getX();
             float touchY = Gdx.graphics.getHeight() - Gdx.input.getY();
 
+            // Resume button
             if (touchX >= resumeButtonX && touchX <= resumeButtonX + resumeButtonWidth &&
                 touchY >= resumeButtonY && touchY <= resumeButtonY + resumeButtonHeight) {
                 AudioManager.getInstance().resumeMusic();
@@ -82,19 +85,18 @@ public class PauseMenu implements Screen {
                 dispose();
             }
 
-
+            // Restart button
             if (touchX >= restartButtonX && touchX <= restartButtonX + restartButtonWidth &&
                 touchY >= restartButtonY && touchY <= restartButtonY + restartButtonHeight) {
                 gameScreen.dispose();
                 AudioManager.getInstance().stopMusic();
-                // Use the getLevel() method to restart at the correct level
-                game.setScreen(new GameScreen(game, gameScreen.getLevel()));  // Restart at the correct level
-
+                game.setScreen(new GameScreen(game, gameScreen.getLevel()));
                 dispose();
             }
 
-            if (touchX >= mainmenuButtonX && touchX <= mainmenuButtonX + mainmenuButtonWidth &&
-                touchY >= mainmenuButtonY && touchY <= mainmenuButtonY + mainmenuButtonHeight) {
+            // Main menu button
+            if (touchX >= mainMenuButtonX && touchX <= mainMenuButtonX + mainMenuButtonWidth &&
+                touchY >= mainMenuButtonY && touchY <= mainMenuButtonY + mainMenuButtonHeight) {
                 gameScreen.dispose();
                 AudioManager.getInstance().stopMusic();
                 game.setScreen(new MainMenuScreen(game));
@@ -110,7 +112,7 @@ public class PauseMenu implements Screen {
         titleImage.dispose();
         resumeButton.dispose();
         restartButton.dispose();
-        mainmenuButton.dispose();
+        mainMenuButton.dispose();
     }
 
     @Override public void resize(int width, int height) {}
