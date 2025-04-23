@@ -13,9 +13,12 @@ gameBackground.jpg
 gameOver.png
 game_title.png
 gameover_title.png
+geometry-dash-death-sound-effect.mp3
+geometry-dash-level-selected.mp3
 ground.png
 images/obstacle.png
 leaderboard.png
+level-complete-geometry-dash.mp3
 level1.mp3
 level1.png
 level2.mp3
