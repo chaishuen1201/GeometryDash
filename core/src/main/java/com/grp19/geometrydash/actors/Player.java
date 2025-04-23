@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.MathUtils;
 
 public class Player {
     private Texture texture;
@@ -32,6 +33,11 @@ public class Player {
 
     private final float groundY = 235f;
 
+    // Rotation properties
+    private float rotation = 0f;
+    private final float ROTATION_SPEED = 180f; // Reduced from 360f to 180f (half rotation per second)
+    private final float FALL_ROTATION_SPEED = 90f; // Reduced from 180f to 90f (quarter rotation per second)
+
     public Player() {
         texture = new Texture(Gdx.files.internal("player.png"));
         bounds = new Rectangle(100, groundY, texture.getWidth(), texture.getHeight());
@@ -41,6 +47,15 @@ public class Player {
         yVelocity += GRAVITY * delta;
         bounds.y += yVelocity * delta;
 
+        // Update rotation based on vertical movement
+        if (yVelocity > 0) {
+            // Spinning faster when going up
+            rotation += ROTATION_SPEED * delta;
+        } else if (yVelocity < 0) {
+            // Spinning slower when falling
+            rotation += FALL_ROTATION_SPEED * delta;
+        }
+
         // If below ground
         if (bounds.y < groundY) {
             bounds.y = groundY;
@@ -49,6 +64,7 @@ public class Player {
             isJumping = false;
             onPlatform = false;
             inJumpGracePeriod = false;
+            rotation = 0f; // Reset rotation when landing
         }
 
         timeSinceLastJump += delta;
@@ -89,6 +105,7 @@ public class Player {
             isJumping = false;
             onPlatform = true;
             inJumpGracePeriod = false;
+            rotation = 0f; // Reset rotation when landing on platform
         }
     }
 
@@ -108,7 +125,24 @@ public class Player {
     }
 
     public void render(SpriteBatch batch) {
-        batch.draw(texture, bounds.x, bounds.y);
+        // Save the current transformation matrix
+        batch.end();
+        batch.begin();
+        
+        // Calculate the center of the player for rotation
+        float centerX = bounds.x + bounds.width / 2;
+        float centerY = bounds.y + bounds.height / 2;
+        
+        // Draw the player with rotation
+        batch.draw(texture,
+            bounds.x, bounds.y,
+            bounds.width / 2, bounds.height / 2, // Origin for rotation
+            bounds.width, bounds.height,
+            1f, 1f,
+            rotation,
+            0, 0,
+            texture.getWidth(), texture.getHeight(),
+            false, false);
     }
 
     public void dispose() {

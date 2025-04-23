@@ -80,6 +80,7 @@ public class PauseMenu implements Screen {
             // Resume button
             if (touchX >= resumeButtonX && touchX <= resumeButtonX + resumeButtonWidth &&
                 touchY >= resumeButtonY && touchY <= resumeButtonY + resumeButtonHeight) {
+                gameScreen.setPaused(false);
                 AudioManager.getInstance().resumeMusic();
                 game.setScreen(gameScreen);
                 dispose();

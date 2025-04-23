@@ -2,9 +2,9 @@ package com.grp19.geometrydash.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.grp19.geometrydash.GameData;
 import com.grp19.geometrydash.GeometryDash;
 import com.badlogic.gdx.graphics.GL20;
 
@@ -16,13 +16,14 @@ public class LevelSelectionScreen implements Screen {
     private Texture[] levelTextures;
     private Texture lockTexture;
     private Texture backButton;
+    private Sound levelSelectedSound;
 
     private final int NUM_LEVELS = 5;
-    private int unlockedLevels; // Now we'll get this from GameData
+    private int unlockedLevels;
 
     public LevelSelectionScreen(GeometryDash game) {
         this.game = game;
-        this.unlockedLevels = GameData.getInstance().getUnlockedLevels();
+        this.unlockedLevels = game.prefs.getUnlockedLevel();
     }
 
     @Override
@@ -32,6 +33,9 @@ public class LevelSelectionScreen implements Screen {
         titleImage = new Texture("Select Level.png");
         backButton = new Texture("back.png");
         lockTexture = new Texture("lock.png");
+        
+        // Load level selected sound
+        levelSelectedSound = Gdx.audio.newSound(Gdx.files.internal("geometry-dash-level-selected.mp3"));
 
         levelTextures = new Texture[NUM_LEVELS];
         for (int i = 0; i < NUM_LEVELS; i++) {
@@ -119,6 +123,9 @@ public class LevelSelectionScreen implements Screen {
                 if (i < unlockedLevels &&
                     touchX >= x && touchX <= x + iconSize &&
                     touchY >= y && touchY <= y + iconSize) {
+                    // Play level selected sound
+                    levelSelectedSound.play();
+                    
                     final int selectedLevel = i + 1;
                     game.setScreen(new GameScreen(game, selectedLevel));
                     dispose();
@@ -153,6 +160,9 @@ public class LevelSelectionScreen implements Screen {
         lockTexture.dispose();
         for (Texture tex : levelTextures) {
             tex.dispose();
+        }
+        if (levelSelectedSound != null) {
+            levelSelectedSound.dispose();
         }
     }
 }

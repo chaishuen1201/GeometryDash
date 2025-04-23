@@ -32,7 +32,8 @@ public class PreferencesManager {
     }
 
     public void setHighScore(int level, int score) {
-        if (score > getHighScore(level)) {
+        int currentBest = getHighScore(level);
+        if (currentBest == 0 || score < currentBest) {
             prefs.putInteger(HIGH_SCORE_KEY_PREFIX + level, score);
             prefs.flush();
         }
